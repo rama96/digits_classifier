@@ -25,56 +25,16 @@ prepare-dev:
 	$(PYTHONGLOBAL) -m venv ${VENV_NAME}
 	$(VENV_ACTIVATE)
 	${PYTHON} -m pip install -U pip
-	${PYTHON} -m pip install -e .[development]
+	${PYTHON} -m pip install -r requirements.txt
 	$(shell printf "\n# Adding this command to read local .env file" >> env/bin/activate)
 	$(shell printf "\nexport \$(grep -v '^#' .env | xargs)" >> env/bin/activate)
 	cp dotenv .env
 	touch .env
 	@echo "*** Please remember to add environment variables to .env file ***"
 
-test:
-	python -m pytest
+run:
+	${PYTHON} our_app.py
 
-test-new:
-	@echo Input argument: $(workers)
-	pytest -c pytest.ini --verbose --color=yes -n $(workers) -rsx --cov=bv_pricing
-
-test-single:
-	@echo Input argument: $(file)
-	pytest -c pytest.ini --verbose --color=yes $(file)
-
-pytest:
-	@echo " Running pytest with DANAMICA_CONFIG=test_config.ini"
-	@export DANAMICA_CONFIG=test_config.ini && pytest -c pytest.ini
-
-test-coverage:
-	${PYTHONENV} coverage run -m pytest
-	${PYTHONENV} coverage report
-
-docs:
-	$(VENV_ACTIVATE); cd docs; pydocmd build; pydocmd serve
-
+# In this context, the *.project pattern means "anything that has the .project extension"
 clean:
-	rm -rf .tox
-	rm -rf .coveragerc
-
-start-service:
-	@echo "Compose starts and runs your entire app."
-	docker-compose up
-
-build-db:
-	docker volume create --driver local pgdata
-	docker-compose build db
-
-build-all:
-	docker volume create --driver local pgdata
-	docker-compose build --build-arg SSH_KEY_PRV="$(cat ~/.ssh/id_rsa)" --build-arg SSH_KEY_PUB="$(cat ~/.ssh/id_rsa.pub)"
-
-delete-build:
-	docker-compose down
-	docker-compose rm web
-	docker-compose rm db
-	docker volume rm pgdata
-
-stop-existing-postgres-service:
-	sudo service postgresql stop
+	rm -r *.project
