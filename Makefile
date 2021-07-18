@@ -7,17 +7,13 @@ PYTHON=python3.8
 
 .DEFAULT: help
 help:
-	@echo "make prepare-dev"
-	@echo "       prepare development environment, use only once"
-	@echo "make docs"
-	@echo "       build documentation using pydocmd"
-	@echo "make clean"
-	@echo "       clean temp files"
-	@echo "make test"
-	@echo "       Run pytest. Arguments: workers (required): number of workers (accepts interger (e.g. 4) or auto such as workers=auto"
-	@echo "make test-single"
-	@echo "       Run pytest on a specific file/directory. Arguments: file (required): path to directory or file"
-
+	@echo "1 . make prepare-dev"
+	@echo "--prepare development environment, use only once"
+	@echo "2. python-on-machine"
+	@echo "--Installs python on the machine if not present for the development environment "
+	@echo "3. run"
+	@echo "--Run the application locally"
+	
 python-on-machine:
 	sudo apt-get -y install ${PYTHONGLOBAL} python3-pip python3.8-venv python3.8-dev
 
