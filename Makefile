@@ -3,7 +3,7 @@
 VENV_NAME=env
 VENV_ACTIVATE=. $(VENV_NAME)/bin/activate
 PYTHONENV=${VENV_NAME}/bin/python
-PYTHON=python3.8
+PYTHONGLOBAL=python3.8
 
 .DEFAULT: help
 help:
@@ -18,16 +18,17 @@ python-on-machine:
 	sudo apt-get -y install ${PYTHONGLOBAL} python3-pip python3.8-venv python3.8-dev
 
 prepare-dev:
-	$(PYTHONGLOBAL) -m venv ${VENV_NAME}
+	virtualenv -p python3.8 env
 	$(VENV_ACTIVATE)
-	${PYTHON} -m pip install -U pip
-	${PYTHON} -m pip install -r requirements.txt
-	$(shell printf "\n# Adding this command to read local .env file" >> env/bin/activate)
-	$(shell printf "\nexport \$(grep -v '^#' .env | xargs)" >> env/bin/activate)
+	pip install -U pip
+	pip install -r requirements.txt
 	cp dotenv .env
 	touch .env
 	@echo "*** Please remember to add environment variables to .env file ***"
 
+add-env-var:
+	$(shell printf "\n# Adding this command to read local .env file" >> env/bin/activate)
+	$(shell printf "\nexport \$(grep -v '^#' .env | xargs)" >> env/bin/activate)
 run:
 	${PYTHON} our_app.py
 
